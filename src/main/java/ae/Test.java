@@ -28,9 +28,9 @@ public class Test {
 
 		// Split article into line
 		String[] line= article.split("\n", -1);
-		for(int i=0; i<line.length;i++) {
-			System.out.println(line[i]);
-		}
+//		for(int i=0; i<line.length;i++) {
+//			System.out.println(line[i]);
+//		}
 		
 		for(int i=0; i<line.length;i++) {
 
@@ -41,7 +41,8 @@ public class Test {
 
 			// Collect MAIN line
 			if(line[i].startsWith("MAIN")) {
-				result += line[i];
+				String temp = line[i].substring(line[i].indexOf(" ")+1);
+				result += temp;
 				break;
 			}
 
@@ -49,13 +50,13 @@ public class Test {
 
 		}
 		
-			//System.out.println(sp[2]+" "+sp[3]+" "+result);
+			System.out.println(sp[2]+" "+sp[3]+" "+result);
 		
 
 
-		//		 StringTokenizer st = new StringTokenizer(article);
-		//	     while (st.hasMoreTokens()) {
-		//	         System.out.println(st.nextToken());
-		//	     }
+//				 StringTokenizer st = new StringTokenizer(article);
+//			     while (st.hasMoreTokens()) {
+//			         System.out.println(st.nextToken());
+//			     }
 	}
 }

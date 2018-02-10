@@ -46,8 +46,10 @@ public class WordCount_Main extends Configured implements Tool {
 				
 				// Collect MAIN line
 				if(line[i].startsWith("MAIN")) {
-					result += line[i];
-					break;
+					if(line[i].length()>0) {
+						result= line[i].substring(line[i].indexOf(" ")+1);
+					}
+					break; //skip the rest of article
 				}
 				
 				
@@ -56,7 +58,7 @@ public class WordCount_Main extends Configured implements Tool {
 			if(token.length>0) {
 				// key = "Article_name" 
 				word.set(token[3]);
-				// result = "Revision" + "MAIN"
+				// value = "Revision" + "MAIN"
 				result = token[2]+" "+ result;
 
 				output.set(result);
@@ -81,7 +83,12 @@ public class WordCount_Main extends Configured implements Tool {
 					result = temp;
 				}
 			}
-			
+			/*	THINGS TO DO
+			 *  - Split MAIN into many output
+			 *  - check output of first job = input of remaining jobs
+			 * 
+			 * 
+			 */
 			if(rev_id!=0) {
 				Text sums = new Text(result);
 				context.write(key, sums);
