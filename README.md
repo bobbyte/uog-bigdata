@@ -1,5 +1,8 @@
-# uog-bigdata
-Big data - MapReduce
+# 1. look in "ae" package ( "assessed exercise" )
+# 2. use "WordCount_Main"
+# 3. "Test" is for test ...obviously
+
+Good luck
 
 ─────────▄▄───────────────────▄▄──
 ──────────▀█───────────────────▀█─
