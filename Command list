@@ -1,0 +1,13 @@
+# Create Jar
+mvn clean package
+
+# set Hadoop classpath
+setenv HADOOP_CLASSPATH $PWD/uog-bigdata-0.0.1-SNAPSHOT.jar
+
+# order hadoop to do job
+hadoop mywordcount.WordCount /user/enwiki/enwiki-20080103-sample.txt wc_article3
+
+# get the merge version of result from HDFS
+hdfs dfs -getmerge wc_article3 wc_article3.txt
+
+
