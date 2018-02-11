@@ -23,81 +23,10 @@ import org.apache.hadoop.util.ToolRunner;
 
 public class WordCount_Main extends Configured implements Tool {
 
-	static class Map extends org.apache.hadoop.mapreduce.Mapper<LongWritable, Text, Text, Text> {
-		private Text output = new Text();
-		private Text word = new Text();
-		
-		public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-			
-			
-			String result = "";
-			String article = value.toString();
-			String token[] = new String[0];
-			
-			
-			// Split article into line
-			String[] line= article.split("\n", -1);
-			for(int i=0; i<line.length;i++) {
-				
-				// Split REVISION line to array token[]
-				if(line[i].startsWith("REVISION")) {
-					token = line[i].split(" ", -1);
-				}
-				
-				// Collect MAIN line
-				if(line[i].startsWith("MAIN")) {
-					if(line[i].length()>0) {
-						result= line[i].substring(line[i].indexOf(" ")+1);
-					}
-					break; //skip the rest of article
-				}
-				
-				
-			
-			}
-			if(token.length>0) {
-				// key = "Article_name" 
-				word.set(token[3]);
-				// value = "Revision" + "MAIN"
-				result = token[2]+" "+ result;
 
-				output.set(result);
-				context.write(word, output);
-			}
-		}
-			
-		
 	
-	}
-	
-	public static class Reduce extends Reducer<Text, Text, Text, Text>{
-		public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-			String result ="" ;
-			int rev_id = 0;
-			// for each value, get the highest Rev_id
-			for (Text value: values) {
-				String temp= value.toString();
-				int temp_rev_id =Integer.parseInt(temp.substring(0, temp.indexOf(" ")));
-				if(temp_rev_id > rev_id) {
-					rev_id = temp_rev_id;
-					result = temp;
-				}
-			}
-			/*	THINGS TO DO
-			 *  - Split MAIN into many output
-			 *  - check output of first job = input of remaining jobs
-			 * 
-			 * 
-			 */
-			if(rev_id!=0) {
-				Text sums = new Text(result);
-				context.write(key, sums);
-			}
-			
-		}
-	}
+	private static final String OUTPUT_PATH = "intermediate_output";
 
-	@Override
 	public int run(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 		Configuration conf = getConf();
@@ -112,14 +41,36 @@ public class WordCount_Main extends Configured implements Tool {
 		job.setReducerClass(Reduce.class);
 		
 		FileInputFormat.addInputPath(job, new Path(args[0]));
-		FileOutputFormat.setOutputPath(job, new Path(args[1]));
+		FileOutputFormat.setOutputPath(job, new Path(args[1] + "/job1"));
 		
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);
 		
 		//job.setOutputFormatClass(TextOutputFormat.class);
+		job.waitForCompletion(true);
+		  /*
+		   * Job 2
+		   */
+		  
+		conf.set("textinputformat.record.delimiter","\n");
 		
-		return (job.waitForCompletion(true) ? 0 : 1);
+		Job job2 = Job.getInstance(conf, "Job 2");
+		job2.setJarByClass(WordCount_Main.class);
+	
+		job2.setMapperClass(Map2.class);
+		job2.setReducerClass(Reduce2.class);
+	
+		job2.setOutputKeyClass(Text.class);
+		job2.setOutputValueClass(Text.class);
+		  
+		job2.setInputFormatClass(FileInputFormat.class);
+		job2.setOutputFormatClass(FileOutputFormat.class);
+
+		FileInputFormat.addInputPath(job2, new Path(args[1] + "/job1"));
+		FileOutputFormat.setOutputPath(job2, new Path(args[1]+"/job2"));
+
+		return job2.waitForCompletion(true) ? 0 : 1;
+		 
 	}
 	
 	public static void main(String[] args) throws Exception {
