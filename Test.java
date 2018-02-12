@@ -50,7 +50,19 @@ public class Test {
 
 		}
 		
-			System.out.println(sp[2]+" "+sp[3]+" "+result);
+		String one = "Anarchism 1 631";
+		String token[]= one.toString().split(" ",-1);
+		if(token.length>0) {
+			if(token[0].equals(">")) {
+				//outGoing = value.toString().substring(value.toString().indexOf(">")+1);
+			}
+			else {
+				String v = token[0].toString();
+				Double rate = Double.parseDouble(token[1]) / Double.parseDouble(token[2]);
+				System.out.println("GO HOMEEE");
+				//sum += rate;
+			}
+		}
 		
 
 
