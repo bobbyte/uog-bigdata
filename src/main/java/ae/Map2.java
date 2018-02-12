@@ -6,11 +6,11 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper.Context;
 
-public class Map2 extends org.apache.hadoop.mapreduce.Mapper<Text, Text, Text, Text> {
+public class Map2 extends org.apache.hadoop.mapreduce.Mapper<LongWritable, Text, Text, Text> {
 	private Text output = new Text();
 	private Text word = new Text();
 	
-	public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
+	public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 		
 		
 		String result = "";
@@ -19,20 +19,24 @@ public class Map2 extends org.apache.hadoop.mapreduce.Mapper<Text, Text, Text, T
 
 			
 		// Split page line to array token[]
-		token = line.split(" ", -1);
+		token = line.split("\\t| ", -1);
 
 		if(token.length>2) {
 			
 			for(int i=2; i<token.length; i++) {
-				// key = "Article_name" 
+				// key = 
 				word.set(token[i]);
-				// value = "Revision" + "MAIN"
-				result = token[0]+" "+ token.length-2;
+				// value = 
+				result = token[0]+ " " + token[1] +" "+ (token.length-2);
 	
 				output.set(result);
 				context.write(word, output);
 			
 			}
+			result = "> "+ line.substring(line.indexOf(" ")+1);
+			word.set(token[0]);
+			output.set(result);
+			context.write(word, output);
 		}
 	}
 		

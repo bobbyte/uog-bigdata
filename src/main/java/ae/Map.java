@@ -31,7 +31,7 @@ public class Map extends org.apache.hadoop.mapreduce.Mapper<LongWritable, Text, 
 			// Collect MAIN line
 			if(line[i].startsWith("MAIN")) {
 				if(line[i].length()>0) {
-					result= line[i].substring(line[i].indexOf(" ")+1);
+					result= line[i].substring(line[i].indexOf(" ")+1).trim();
 				}
 				break; //skip the rest of article
 			}
@@ -43,7 +43,7 @@ public class Map extends org.apache.hadoop.mapreduce.Mapper<LongWritable, Text, 
 			// key = "Article_name" 
 			word.set(token[3]);
 			// value = "Revision" + "MAIN"
-			result = token[2]+" "+ result;
+			result = token[2]+" "+result;
 
 			output.set(result);
 			context.write(word, output);
