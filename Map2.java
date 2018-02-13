@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Mapper.Context;
 
 public class Map2 extends org.apache.hadoop.mapreduce.Mapper<LongWritable, Text, Text, Text> {
 	private Text output = new Text();
@@ -24,15 +23,17 @@ public class Map2 extends org.apache.hadoop.mapreduce.Mapper<LongWritable, Text,
 		if(token.length>2) {
 			
 			for(int i=2; i<token.length; i++) {
-				// key = 
+				// key = article_title_u
 				word.set(token[i]);
-				// value = 
+				// value = article_title_v + score_v + numlinks_v ; where v -> u
 				result = token[0]+ " " + token[1] +" "+ (token.length-2);
 	
 				output.set(result);
 				context.write(word, output);
 			
 			}
+			
+			//write key = article_tile_v , value = "> " + outgoing_from_key
 			result = "> "+ line.substring(line.indexOf(" ")+1);
 			word.set(token[0]);
 			output.set(result);

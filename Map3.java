@@ -11,7 +11,7 @@ public class Map3 extends org.apache.hadoop.mapreduce.Mapper<LongWritable, Text,
 	
 	public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 		
-		
+		//cut off the outlink line and display only article_title & pageRank
 		String line = value.toString();
 		String token[] = new String[0];
 
